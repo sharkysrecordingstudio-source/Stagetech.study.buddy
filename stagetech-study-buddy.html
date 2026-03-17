@@ -1,0 +1,2653 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>StageTech Study Buddy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0f;
+    --bg2: #111318;
+    --bg3: #191c24;
+    --bg4: #21252f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --accent: #e8ff47;
+    --accent2: #7c5cfc;
+    --accent3: #ff6b35;
+    --accent4: #00d4aa;
+    --text: #f0f2f8;
+    --text2: #9099b0;
+    --text3: #5c647a;
+    --red: #ff4757;
+    --green: #2ed573;
+    --card-glow: 0 0 0 1px var(--border), 0 4px 24px rgba(0,0,0,0.4);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── LAYOUT ─── */
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    z-index: 100;
+    transition: transform .3s ease;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .logo-sub {
+    font-size: 10px;
+    color: var(--text3);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 12px 10px;
+    overflow-y: auto;
+  }
+
+  .nav-section {
+    margin-bottom: 20px;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0 10px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all .15s;
+    color: var(--text2);
+    font-size: 14px;
+    font-weight: 500;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active {
+    background: rgba(232,255,71,0.1);
+    color: var(--accent);
+  }
+
+  .nav-item .nav-icon { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent2);
+    color: #fff;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .sidebar-footer {
+    padding: 14px 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background .15s;
+  }
+
+  .user-card:hover { background: var(--bg3); }
+
+  .user-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: var(--bg);
+    flex-shrink: 0;
+  }
+
+  .user-info { flex: 1; min-width: 0; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .user-level { font-size: 11px; color: var(--text3); }
+
+  /* MAIN CONTENT */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .topbar {
+    height: 60px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .topbar-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .btn-primary:hover { background: #d4eb2d; transform: translateY(-1px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { background: var(--bg3); color: var(--text); }
+
+  .btn-icon {
+    padding: 8px;
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .btn-icon:hover { color: var(--text); border-color: var(--border2); }
+
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  /* PAGE SYSTEM */
+  .page { display: none; animation: fadeIn .2s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ─── COMPONENTS ─── */
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--card-glow);
+  }
+
+  .card-sm { padding: 14px 16px; }
+
+  /* Grid */
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  /* Stat Cards */
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-color, var(--accent));
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 12px; color: var(--text2); font-weight: 500; }
+
+  .stat-icon {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-size: 28px;
+    opacity: 0.15;
+  }
+
+  /* Progress */
+  .progress-bar {
+    height: 6px;
+    background: var(--bg4);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width .5s ease;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .tag-audio { background: rgba(124,92,252,0.15); color: var(--accent2); }
+  .tag-lighting { background: rgba(232,255,71,0.12); color: var(--accent); }
+  .tag-rigging { background: rgba(255,107,53,0.15); color: var(--accent3); }
+  .tag-video { background: rgba(0,212,170,0.12); color: var(--accent4); }
+  .tag-infra { background: rgba(255,71,87,0.12); color: var(--red); }
+  .tag-easy { background: rgba(46,213,115,0.12); color: var(--green); }
+  .tag-medium { background: rgba(255,165,0,0.12); color: #ffa500; }
+  .tag-hard { background: rgba(255,71,87,0.12); color: var(--red); }
+
+  /* Search bar */
+  .search-bar {
+    position: relative;
+    flex: 1;
+    max-width: 380px;
+  }
+
+  .search-bar input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 14px 9px 38px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+    transition: border-color .15s;
+  }
+
+  .search-bar input::placeholder { color: var(--text3); }
+  .search-bar input:focus { border-color: var(--accent); }
+
+  .search-bar .search-icon {
+    position: absolute;
+    left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 15px;
+    pointer-events: none;
+  }
+
+  /* ─── DASHBOARD ─── */
+  .dashboard-hero {
+    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .dashboard-hero::after {
+    content: '🎭';
+    position: absolute;
+    right: 24px; top: 50%; transform: translateY(-50%);
+    font-size: 72px;
+    opacity: 0.08;
+  }
+
+  .hero-greeting {
+    font-size: 13px;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, var(--text), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-progress-wrap {
+    max-width: 360px;
+  }
+
+  .hero-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+
+  /* Module Cards */
+  .module-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .module-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(232,255,71,0.08);
+  }
+
+  .module-card .module-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .module-card .module-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .module-card .module-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  .module-card .module-progress {
+    margin-top: 14px;
+  }
+
+  /* ─── EQUIPMENT LIBRARY ─── */
+  .equipment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .equip-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .equip-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .equip-thumb {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    background: var(--bg3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .equip-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.5));
+  }
+
+  .equip-body { padding: 14px 16px 16px; }
+
+  .equip-name {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .equip-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .equip-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  /* Filter Pills */
+  .filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .filter-pill {
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .filter-pill:hover { border-color: var(--border2); color: var(--text); }
+  .filter-pill.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+  /* ─── QUIZ ─── */
+  .quiz-container { max-width: 700px; margin: 0 auto; }
+
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .quiz-progress-text { font-size: 13px; color: var(--text2); }
+
+  .quiz-question {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-q-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .quiz-q-text {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+
+  .quiz-q-hint {
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+
+  .quiz-option {
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .quiz-option:hover { border-color: var(--accent); background: rgba(232,255,71,0.04); }
+  .quiz-option.selected { border-color: var(--accent); background: rgba(232,255,71,0.08); color: var(--accent); }
+  .quiz-option.correct { border-color: var(--green); background: rgba(46,213,115,0.1); color: var(--green); }
+  .quiz-option.wrong { border-color: var(--red); background: rgba(255,71,87,0.1); color: var(--red); }
+
+  .option-letter {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--bg4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all .15s;
+  }
+
+  .quiz-option.selected .option-letter { background: var(--accent); color: var(--bg); }
+  .quiz-option.correct .option-letter { background: var(--green); color: var(--bg); }
+  .quiz-option.wrong .option-letter { background: var(--red); color: #fff; }
+
+  .quiz-feedback {
+    display: none;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-feedback { border-color: var(--green); }
+  .quiz-feedback.wrong-feedback { border-color: var(--red); }
+
+  .feedback-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 15px;
+  }
+
+  /* ─── AI CHAT ─── */
+  .chat-layout {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px - 48px);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .chat-msg {
+    display: flex;
+    gap: 12px;
+    animation: fadeIn .2s ease;
+  }
+
+  .chat-msg.user { flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .msg-avatar.ai { background: linear-gradient(135deg, var(--accent2), var(--accent)); }
+  .msg-avatar.user { background: var(--bg4); }
+
+  .msg-bubble {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 16px;
+    max-width: 78%;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .chat-msg.user .msg-bubble {
+    background: rgba(232,255,71,0.09);
+    border-color: rgba(232,255,71,0.2);
+  }
+
+  .msg-bubble strong { color: var(--accent); font-weight: 600; }
+  .msg-bubble em { color: var(--accent4); font-style: normal; font-weight: 500; }
+
+  .chat-input-area {
+    padding: 16px 0 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .chat-input-wrap {
+    display: flex;
+    gap: 10px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 14px;
+    align-items: flex-end;
+    transition: border-color .15s;
+  }
+
+  .chat-input-wrap:focus-within { border-color: var(--accent); }
+
+  .chat-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    resize: none;
+    max-height: 120px;
+    min-height: 22px;
+    line-height: 1.5;
+  }
+
+  .chat-input::placeholder { color: var(--text3); }
+
+  .send-btn {
+    width: 34px; height: 34px;
+    background: var(--accent);
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    color: var(--bg);
+    transition: all .15s;
+    flex-shrink: 0;
+  }
+
+  .send-btn:hover { background: #d4eb2d; transform: scale(1.05); }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .quick-prompts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .quick-prompt {
+    padding: 5px 12px;
+    border-radius: 99px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .quick-prompt:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── RECOGNITION ─── */
+  .recognition-container { max-width: 640px; margin: 0 auto; }
+
+  .camera-frame {
+    background: var(--bg2);
+    border: 2px dashed var(--border2);
+    border-radius: var(--radius);
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .camera-frame:hover { border-color: var(--accent); }
+  .camera-frame.active { border-color: var(--accent); border-style: solid; }
+
+  .camera-frame video, .camera-frame img {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .camera-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .scan-ring {
+    width: 160px; height: 160px;
+    border: 3px solid var(--accent);
+    border-radius: 24px;
+    position: relative;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(232,255,71,0.4); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 12px rgba(232,255,71,0); }
+  }
+
+  .upload-zone-icon { font-size: 48px; opacity: 0.5; }
+  .upload-zone-text { color: var(--text2); font-size: 14px; text-align: center; }
+  .upload-zone-sub { color: var(--text3); font-size: 12px; }
+
+  .recognition-result {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: none;
+    animation: fadeIn .3s ease;
+  }
+
+  .recognition-result.show { display: block; }
+
+  .recog-match {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .recog-icon { font-size: 48px; }
+
+  .recog-name {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .recog-confidence {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  /* ─── TERMS ─── */
+  .terms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  .term-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .term-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+
+  .term-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--accent);
+  }
+
+  .term-category {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .term-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modalIn .2s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .modal-header {
+    padding: 24px 24px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .modal-icon { font-size: 48px; margin-bottom: 12px; }
+
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .modal-close {
+    background: var(--bg4);
+    border: none;
+    color: var(--text2);
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .modal-close:hover { background: var(--bg3); color: var(--text); }
+
+  .modal-body { padding: 0 24px 24px; }
+
+  .modal-desc { color: var(--text2); line-height: 1.7; margin-bottom: 16px; }
+
+  .modal-section {
+    margin-bottom: 16px;
+    padding: 14px;
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+  }
+
+  .modal-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .modal-section-content { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  .yt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    background: #ff0000;
+    color: #fff;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .15s;
+    margin-top: 10px;
+  }
+
+  .yt-btn:hover { background: #cc0000; }
+
+  /* Typing indicator */
+  .typing-indicator {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 12px 16px;
+  }
+
+  .typing-dot {
+    width: 7px; height: 7px;
+    background: var(--text3);
+    border-radius: 50%;
+    animation: typingBounce 1.2s ease-in-out infinite;
+  }
+
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* Scores */
+  .score-ring {
+    width: 80px; height: 80px;
+    position: relative;
+  }
+
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  /* API KEY */
+  .api-key-banner {
+    background: rgba(232,255,71,0.07);
+    border: 1px solid rgba(232,255,71,0.2);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .api-key-banner input {
+    flex: 1;
+    min-width: 200px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+  }
+
+  .api-key-banner input:focus { border-color: var(--accent); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 2000;
+    animation: slideUp .2s ease;
+    display: none;
+  }
+
+  .toast.show { display: block; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  /* Dividers */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Mobile hamburger */
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  /* API KEY INPUT */
+  .settings-section { margin-bottom: 28px; }
+
+  .settings-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 8px;
+  }
+
+  .settings-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .15s;
+  }
+
+  .settings-input:focus { border-color: var(--accent); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 700px) {
+    .sidebar {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      transform: translateX(-100%);
+      z-index: 500;
+    }
+    .sidebar.open { transform: none; box-shadow: 8px 0 40px rgba(0,0,0,0.6); }
+    .hamburger { display: block; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .content { padding: 16px; }
+    .topbar { padding: 0 16px; }
+    .chat-layout { height: calc(100vh - 60px - 32px); }
+  }
+
+  .overlay-close {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 490;
+    background: rgba(0,0,0,0.4);
+  }
+
+  .overlay-close.show { display: block; }
+
+  /* Role cards */
+  .role-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .role-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .role-icon { font-size: 36px; margin-bottom: 12px; }
+
+  .role-name {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .role-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+  .role-skills {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .skill-chip {
+    padding: 3px 8px;
+    background: var(--bg4);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--text2);
+  }
+</style>
+</head>
+<body>
+
+<div class="overlay-close" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🎬</div>
+        <div>
+          <div class="logo-text">StageTech</div>
+          <div class="logo-sub">Study Buddy</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-label">Leren</div>
+        <button class="nav-item active" onclick="showPage('dashboard', this)">
+          <span class="nav-icon">🏠</span> Dashboard
+        </button>
+        <button class="nav-item" onclick="showPage('library', this)">
+          <span class="nav-icon">📚</span> Kennisbibliotheek
+        </button>
+        <button class="nav-item" onclick="showPage('equipment', this)">
+          <span class="nav-icon">🎛️</span> Apparatuur
+        </button>
+        <button class="nav-item" onclick="showPage('roles', this)">
+          <span class="nav-icon">👷</span> Rollen
+        </button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Oefenen</div>
+        <button class="nav-item" onclick="showPage('quiz', this)">
+          <span class="nav-icon">🧠</span> Quiz Mode
+          <span class="nav-badge">Nieuw</span>
+        </button>
+        <button class="nav-item" onclick="showPage('recognition', this)">
+          <span class="nav-icon">📷</span> Herkenning
+        </button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">AI</div>
+        <button class="nav-item" onclick="showPage('chat', this)">
+          <span class="nav-icon">🤖</span> AI Assistent
+        </button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Account</div>
+        <button class="nav-item" onclick="showPage('settings', this)">
+          <span class="nav-icon">⚙️</span> Instellingen
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" id="userAvatarSidebar">S</div>
+        <div class="user-info">
+          <div class="user-name" id="userNameSidebar">Student</div>
+          <div class="user-level">MBO Niveau 4</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <div class="search-bar" style="display:none" id="topbarSearch">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Zoeken..." id="globalSearch" oninput="handleGlobalSearch(this.value)">
+        </div>
+        <button class="btn btn-icon" onclick="toggleSearch()" title="Zoeken">🔍</button>
+        <button class="btn btn-primary" onclick="showPage('quiz', document.querySelector('.nav-item:nth-child(5)'))">Quiz starten</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ─── DASHBOARD ─── -->
+      <div class="page active" id="page-dashboard">
+        <div class="dashboard-hero">
+          <div class="hero-greeting">Welkom terug 👋</div>
+          <div class="hero-title" id="heroTitle">Hey Student!</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:16px;">Ga door waar je gebleven bent. Je doet het goed!</div>
+          <div class="hero-progress-wrap">
+            <div class="hero-progress-label">
+              <span>Voortgang</span>
+              <span id="overallProgress">34%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="overallProgressBar" style="width:34%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-4" style="margin-bottom:20px;">
+          <div class="stat-card" style="--accent-color:var(--accent)">
+            <div class="stat-icon">📚</div>
+            <div class="stat-value" id="statTerms">50</div>
+            <div class="stat-label">Termen geleerd</div>
+          </div>
+          <div class="stat-card" style="--accent-color:var(--accent2)">
+            <div class="stat-icon">🎛️</div>
+            <div class="stat-value" id="statEquip">50</div>
+            <div class="stat-label">Apparaten bekend</div>
+          </div>
+          <div class="stat-card" style="--accent-color:var(--accent3)">
+            <div class="stat-icon">🧠</div>
+            <div class="stat-value" id="statQuizzes">0</div>
+            <div class="stat-label">Quizzen gemaakt</div>
+          </div>
+          <div class="stat-card" style="--accent-color:var(--accent4)">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value" id="statScore">—</div>
+            <div class="stat-label">Gem. quizscore</div>
+          </div>
+        </div>
+
+        <div class="section-header" style="margin-bottom:16px;">
+          <div class="section-title">Leermodules</div>
+          <button class="btn btn-ghost" style="font-size:12px;">Alles bekijken</button>
+        </div>
+
+        <div class="grid grid-3" style="margin-bottom:24px;" id="modulesGrid">
+          <!-- filled by JS -->
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Snel aan de slag</div>
+        </div>
+
+        <div class="grid grid-4">
+          <div class="module-card" onclick="showPage('quiz', null)" style="text-align:center;">
+            <div class="module-icon">🧠</div>
+            <div class="module-title">Quiz starten</div>
+            <div class="module-desc">Test je kennis met AI-gegenereerde vragen</div>
+          </div>
+          <div class="module-card" onclick="showPage('recognition', null)" style="text-align:center;">
+            <div class="module-icon">📷</div>
+            <div class="module-title">Herkenning</div>
+            <div class="module-desc">Upload een foto van apparatuur</div>
+          </div>
+          <div class="module-card" onclick="showPage('chat', null)" style="text-align:center;">
+            <div class="module-icon">🤖</div>
+            <div class="module-title">AI Assistent</div>
+            <div class="module-desc">Stel vragen over podiumtechniek</div>
+          </div>
+          <div class="module-card" onclick="showPage('equipment', null)" style="text-align:center;">
+            <div class="module-icon">🎛️</div>
+            <div class="module-title">Apparatuur</div>
+            <div class="module-desc">Blader door 50+ apparaten</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── KNOWLEDGE LIBRARY ─── -->
+      <div class="page" id="page-library">
+        <div class="filter-pills" id="termFilters">
+          <button class="filter-pill active" onclick="filterTerms('all', this)">Alles</button>
+          <button class="filter-pill" onclick="filterTerms('audio', this)">🎵 Audio</button>
+          <button class="filter-pill" onclick="filterTerms('lighting', this)">💡 Licht</button>
+          <button class="filter-pill" onclick="filterTerms('rigging', this)">🔩 Rigging</button>
+          <button class="filter-pill" onclick="filterTerms('video', this)">📹 Video</button>
+          <button class="filter-pill" onclick="filterTerms('general', this)">📋 Algemeen</button>
+        </div>
+        <div class="terms-grid" id="termsGrid"><!-- filled by JS --></div>
+      </div>
+
+      <!-- ─── EQUIPMENT ─── -->
+      <div class="page" id="page-equipment">
+        <div class="filter-pills" id="equipFilters">
+          <button class="filter-pill active" onclick="filterEquip('all', this)">Alles</button>
+          <button class="filter-pill" onclick="filterEquip('audio', this)">🎵 Audio</button>
+          <button class="filter-pill" onclick="filterEquip('lighting', this)">💡 Belichting</button>
+          <button class="filter-pill" onclick="filterEquip('rigging', this)">🔩 Rigging</button>
+          <button class="filter-pill" onclick="filterEquip('video', this)">📹 Video</button>
+          <button class="filter-pill" onclick="filterEquip('infrastructure', this)">🏗️ Infrastructuur</button>
+        </div>
+        <div class="equipment-grid" id="equipGrid"><!-- filled by JS --></div>
+      </div>
+
+      <!-- ─── ROLES ─── -->
+      <div class="page" id="page-roles">
+        <div class="grid grid-3" id="rolesGrid"><!-- filled by JS --></div>
+      </div>
+
+      <!-- ─── QUIZ ─── -->
+      <div class="page" id="page-quiz">
+        <div class="quiz-container" id="quizContainer">
+          <div id="quizStart">
+            <div style="text-align:center;padding:40px 0;">
+              <div style="font-size:64px;margin-bottom:16px;">🧠</div>
+              <div class="section-title" style="font-size:24px;margin-bottom:10px;">Quiz Mode</div>
+              <div style="color:var(--text2);margin-bottom:28px;max-width:380px;margin-left:auto;margin-right:auto;">
+                Test je kennis van podiumtechniek met vragen over termen, apparatuur en scenario's.
+              </div>
+              <div class="grid grid-3" style="max-width:400px;margin:0 auto 28px;">
+                <div class="card" style="text-align:center;cursor:pointer;" onclick="startQuiz('easy')" id="diffEasy">
+                  <div style="font-size:28px;margin-bottom:8px;">🌱</div>
+                  <div style="font-weight:700;margin-bottom:4px;">Basis</div>
+                  <div style="font-size:12px;color:var(--text3);">MBO Niveau 3</div>
+                </div>
+                <div class="card" style="text-align:center;cursor:pointer;border-color:var(--accent);" onclick="startQuiz('medium')" id="diffMedium">
+                  <div style="font-size:28px;margin-bottom:8px;">🔥</div>
+                  <div style="font-weight:700;margin-bottom:4px;">Gevorderd</div>
+                  <div style="font-size:12px;color:var(--text3);">MBO Niveau 4</div>
+                </div>
+                <div class="card" style="text-align:center;cursor:pointer;" onclick="startQuiz('hard')" id="diffHard">
+                  <div style="font-size:28px;margin-bottom:8px;">⚡</div>
+                  <div style="font-weight:700;margin-bottom:4px;">Expert</div>
+                  <div style="font-size:12px;color:var(--text3);">HBO Niveau</div>
+                </div>
+              </div>
+              <button class="btn btn-primary" style="padding:12px 32px;font-size:15px;" onclick="startQuiz('medium')">Quiz starten</button>
+            </div>
+          </div>
+
+          <div id="quizActive" style="display:none;">
+            <div class="quiz-header">
+              <div>
+                <div class="quiz-progress-text" id="quizProgressText">Vraag 1 van 10</div>
+                <div class="progress-bar" style="width:200px;margin-top:6px;">
+                  <div class="progress-fill" id="quizProgressBar" style="width:10%"></div>
+                </div>
+              </div>
+              <button class="btn btn-ghost" onclick="resetQuiz()" style="font-size:12px;">✕ Stoppen</button>
+            </div>
+
+            <div class="quiz-question">
+              <div class="quiz-q-label" id="quizQLabel">Terminologie</div>
+              <div class="quiz-q-text" id="quizQText">Laad vraag...</div>
+              <div class="quiz-q-hint" id="quizQHint"></div>
+            </div>
+
+            <div class="quiz-options" id="quizOptions"></div>
+
+            <div class="quiz-feedback" id="quizFeedback">
+              <div class="feedback-title" id="feedbackTitle"></div>
+              <div id="feedbackText"></div>
+            </div>
+
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;" id="quizNextWrap" style="display:none;">
+              <button class="btn btn-primary" onclick="nextQuestion()" id="quizNextBtn" style="display:none;">Volgende vraag →</button>
+            </div>
+          </div>
+
+          <div id="quizDone" style="display:none;text-align:center;padding:40px 0;">
+            <div style="font-size:64px;margin-bottom:16px;" id="quizDoneEmoji">🎉</div>
+            <div class="section-title" style="font-size:24px;margin-bottom:10px;" id="quizDoneTitle">Quiz voltooid!</div>
+            <div style="color:var(--text2);margin-bottom:24px;" id="quizDoneScore"></div>
+            <div style="display:flex;justify-content:center;gap:10px;">
+              <button class="btn btn-primary" onclick="startQuiz(currentDifficulty)">Opnieuw</button>
+              <button class="btn btn-ghost" onclick="resetQuiz()">Terug</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── RECOGNITION ─── -->
+      <div class="page" id="page-recognition">
+        <div class="recognition-container">
+          <div class="api-key-banner" id="apiKeyBannerRec" style="display:none">
+            <span style="font-size:20px;">🔑</span>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:13px;margin-bottom:2px;">Anthropic API Sleutel vereist</div>
+              <div style="font-size:12px;color:var(--text2);">Voer je sleutel in bij Instellingen voor AI-herkenning</div>
+            </div>
+            <button class="btn btn-ghost" style="font-size:12px;" onclick="showPage('settings',null)">Instellingen</button>
+          </div>
+
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-family:var(--font-display);font-size:22px;font-weight:800;margin-bottom:6px;">📷 Apparatuurherkenning</div>
+            <div style="color:var(--text2);font-size:13px;">Upload een foto of maak een opname om apparatuur te herkennen</div>
+          </div>
+
+          <input type="file" id="recogFileInput" accept="image/*" style="display:none" onchange="handleRecogImage(event)">
+
+          <div class="camera-frame" id="cameraFrame" onclick="document.getElementById('recogFileInput').click()">
+            <div class="upload-zone-icon">📷</div>
+            <div class="upload-zone-text">Klik om een foto te uploaden</div>
+            <div class="upload-zone-sub">of sleep een afbeelding hiernaartoe</div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-bottom:20px;">
+            <button class="btn btn-primary" style="flex:1;" onclick="document.getElementById('recogFileInput').click()">
+              📁 Foto uploaden
+            </button>
+            <button class="btn btn-ghost" style="flex:1;" id="cameraBtn" onclick="startCamera()">
+              📷 Camera starten
+            </button>
+          </div>
+
+          <div class="recognition-result" id="recognitionResult">
+            <div class="recog-match">
+              <div class="recog-icon" id="recogIcon">🎛️</div>
+              <div>
+                <div class="recog-name" id="recogName">–</div>
+                <div class="recog-confidence" id="recogConfidence"></div>
+                <div id="recogTags" style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;"></div>
+              </div>
+            </div>
+            <div class="modal-desc" id="recogDesc"></div>
+            <div class="modal-section">
+              <div class="modal-section-title">Gebruik in de praktijk</div>
+              <div class="modal-section-content" id="recogUsage"></div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:8px;">
+              <button class="btn btn-ghost" onclick="askAIAboutRecog()" style="font-size:12px;">🤖 Meer vragen aan AI</button>
+              <button class="btn btn-ghost" onclick="clearRecog()" style="font-size:12px;">✕ Wissen</button>
+            </div>
+          </div>
+
+          <div id="recogLoading" style="display:none;text-align:center;padding:24px;">
+            <div class="spinner" style="margin:0 auto 12px;width:32px;height:32px;border-width:3px;"></div>
+            <div style="color:var(--text2);font-size:13px;">AI analyseert de afbeelding...</div>
+          </div>
+
+          <!-- Manual fallback search -->
+          <div style="margin-top:20px;">
+            <div class="section-header">
+              <div class="section-title" style="font-size:15px;">Handmatig zoeken</div>
+            </div>
+            <div class="search-bar" style="max-width:100%">
+              <span class="search-icon">🔍</span>
+              <input type="text" placeholder="Naam van apparatuur..." id="recogManualSearch" oninput="recogManualSearch(this.value)">
+            </div>
+            <div id="recogSearchResults" style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── CHAT ─── -->
+      <div class="page" id="page-chat">
+        <div class="chat-layout">
+          <div class="api-key-banner" id="apiKeyBannerChat">
+            <span style="font-size:20px;">🔑</span>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:13px;margin-bottom:2px;">Anthropic API Sleutel</div>
+              <div style="font-size:12px;color:var(--text2);">Vereist voor de AI assistent</div>
+            </div>
+            <input type="password" id="apiKeyInputChat" placeholder="sk-ant-..." onchange="saveApiKey(this.value)">
+            <button class="btn btn-primary" style="font-size:12px;padding:7px 14px;" onclick="saveApiKey(document.getElementById('apiKeyInputChat').value)">Opslaan</button>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg">
+              <div class="msg-avatar ai">🎬</div>
+              <div class="msg-bubble">
+                <strong>Hallo!</strong> Ik ben jouw AI-assistent voor podiumtechniek. 🎭<br><br>
+                Ik kan je helpen met:<br>
+                • Uitleg over technische termen<br>
+                • Informatie over apparatuur<br>
+                • Vragen over producties en workflows<br>
+                • Quizvragen genereren<br><br>
+                <em>Wat wil jij leren vandaag?</em>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <div class="quick-prompts">
+              <button class="quick-prompt" onclick="sendQuickPrompt('Wat is een DI-box?')">Wat is een DI-box?</button>
+              <button class="quick-prompt" onclick="sendQuickPrompt('Leg DMX-512 uit')">DMX-512 uitleg</button>
+              <button class="quick-prompt" onclick="sendQuickPrompt('Wat doet een rigger?')">Rol van rigger</button>
+              <button class="quick-prompt" onclick="sendQuickPrompt('Genereer 5 quizvragen over audioapparatuur')">Quiz genereren</button>
+              <button class="quick-prompt" onclick="sendQuickPrompt('Wat is gain staging?')">Gain staging</button>
+            </div>
+            <div class="chat-input-wrap">
+              <textarea class="chat-input" id="chatInput" rows="1" placeholder="Stel een vraag over podiumtechniek..."
+                onkeydown="chatKeydown(event)" oninput="autoResize(this)"></textarea>
+              <button class="send-btn" id="sendBtn" onclick="sendChat()">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── SETTINGS ─── -->
+      <div class="page" id="page-settings">
+        <div style="max-width:560px;">
+          <div class="card" style="margin-bottom:20px;">
+            <div class="section-title" style="margin-bottom:20px;">👤 Profiel</div>
+            <div class="settings-section">
+              <div class="settings-label">Naam</div>
+              <input class="settings-input" type="text" id="settingName" placeholder="Je naam" value="Student" onchange="updateProfile()">
+            </div>
+            <div class="settings-section">
+              <div class="settings-label">Lerniveau</div>
+              <select class="settings-input" id="settingLevel" onchange="updateProfile()">
+                <option value="mbo3">MBO Niveau 3</option>
+                <option value="mbo4" selected>MBO Niveau 4</option>
+                <option value="hbo">HBO</option>
+              </select>
+            </div>
+            <div class="settings-section">
+              <div class="settings-label">Taal</div>
+              <select class="settings-input" id="settingLang">
+                <option value="nl" selected>🇳🇱 Nederlands</option>
+                <option value="en">🇬🇧 English</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px;">
+            <div class="section-title" style="margin-bottom:20px;">🔑 API Configuratie</div>
+            <div class="settings-section">
+              <div class="settings-label">Anthropic API Sleutel</div>
+              <input class="settings-input" type="password" id="settingApiKey" placeholder="sk-ant-api03-..." oninput="saveApiKey(this.value)">
+              <div style="font-size:12px;color:var(--text3);margin-top:6px;">
+                Haal je sleutel op via <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a>. Sleutels worden lokaal opgeslagen.
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="testApiKey()">Verbinding testen</button>
+          </div>
+
+          <div class="card">
+            <div class="section-title" style="margin-bottom:20px;">📊 Statistieken</div>
+            <div class="grid grid-2" style="gap:12px;">
+              <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">QUIZZEN GEMAAKT</div>
+                <div style="font-family:var(--font-display);font-size:24px;font-weight:800;" id="statQuizzesBig">0</div>
+              </div>
+              <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">GEM. SCORE</div>
+                <div style="font-family:var(--font-display);font-size:24px;font-weight:800;" id="statScoreBig">—</div>
+              </div>
+            </div>
+            <button class="btn btn-ghost" style="margin-top:14px;font-size:12px;" onclick="resetStats()">🗑️ Statistieken wissen</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="modal-icon" id="modalIcon">🎛️</div>
+        <div class="modal-title" id="modalTitle">Titel</div>
+        <div id="modalTagsWrap" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-section" id="modalExtraSection" style="display:none">
+        <div class="modal-section-title" id="modalExtraTitle">Details</div>
+        <div class="modal-section-content" id="modalExtraContent"></div>
+      </div>
+      <div class="modal-section" id="modalUsageSection" style="display:none">
+        <div class="modal-section-title">Gebruik in de praktijk</div>
+        <div class="modal-section-content" id="modalUsageContent"></div>
+      </div>
+      <div id="modalYTLink"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+
+const TERMS = [
+  { id:1, name:'FOH', cat:'audio', level:'easy', icon:'🎚️', desc:'Front of House – de mixpositie in de zaal waar het publiek zit. De FOH-engineer mixt het geluid voor het publiek.', usage:'Tijdens een concert staat de FOH-engineer achter een mengpaneel midden in de zaal om het optimale geluid voor het publiek in te stellen.' },
+  { id:2, name:'Monitor mix', cat:'audio', level:'easy', icon:'🔊', desc:'Een aparte audiomix voor de artiesten op het podium, zodat zij zichzelf en elkaar kunnen horen.', usage:'Een zanger vraagt de monitor-engineer om meer zang in zijn wedge-monitor zodat hij zichzelf beter kan horen tijdens de performance.' },
+  { id:3, name:'DMX-512', cat:'lighting', level:'medium', icon:'💡', desc:'Digital Multiplex – het standaard protocool voor digitale aansturing van theaterlichten. Eén DMX-universum bevat 512 kanalen.', usage:'Een lichtoperator programmeert een lichtshow via een DMX-controller die via XLR-kabel verbonden is met 20 moving heads.' },
+  { id:4, name:'Truss', cat:'rigging', level:'easy', icon:'🔩', desc:'Gelaste aluminium constructie die dient als draagframe voor lichten, speakers en andere apparatuur boven het podium.', usage:'Een rig-crew hangt 12 moving heads aan een 12 meter lange truss die met 4 motoren boven het podium wordt gehesen.' },
+  { id:5, name:'Stage plot', cat:'general', level:'easy', icon:'📋', desc:'Technische tekening van het podium met de exacte posities van apparatuur, muzikanten en aansluitpunten.', usage:'De production manager stuurt de venue een stage plot zodat de lokale crew de backline en monitoren op de juiste plek kan zetten.' },
+  { id:6, name:'Gain staging', cat:'audio', level:'medium', icon:'🎛️', desc:'Het correct instellen van signaalsterktes door de hele audioketen om ruis te minimaliseren en vervorming te voorkomen.', usage:'Een geluidstechnicus stelt de gain op de preamp in zodat de meter gemiddeld op -18 dBFS staat voor optimale headroom.' },
+  { id:7, name:'Line array', cat:'audio', level:'medium', icon:'📢', desc:'Systeem van meerdere luidsprekers die verticaal gestapeld zijn en samenwerken als één coherente geluidsbron.', usage:'Bij een outdoor festival worden 12 line-array-elementen per kant gehangen voor een gelijke geluidsbedekking over het hele festivalterrein.' },
+  { id:8, name:'Snake / multicore', cat:'audio', level:'easy', icon:'🐍', desc:'Kabelgebundel met meerdere audiokanalen in één mantel, van het podium naar de FOH-positie.', usage:'Een 32-kanaals stagebox met multicore verbindt alle microfoonaansluitingen op het podium met het FOH-mengpaneel.' },
+  { id:9, name:'Rigging', cat:'rigging', level:'medium', icon:'🔗', desc:'Het ophangen en veilig bevestigen van apparatuur boven het publiek of podium, inclusief alle berekeningen en veiligheidscertificeringen.', usage:'De rigger maakt gebruik van shackles, slings en chain-hoists om een truss aan de dakconstructie van de hal te bevestigen.' },
+  { id:10, name:'Patch', cat:'audio', level:'medium', icon:'🔌', desc:'Het verbinden van audiokanalen via een patchbay of digitale router naar de gewenste bestemmingen.', usage:'De A2 patcht het drumstel door: 8 kanalen van de stagebox naar de juiste kanalen op het digitale mengpaneel.' },
+  { id:11, name:'DI-box', cat:'audio', level:'easy', icon:'📦', desc:'Direct Injection box – converteert een ongebalanceerd signaal (gitaar, keyboard) naar een gebalanceerd microfoonaansluiting.', usage:'Een basgitarist sluit zijn instrument via een DI-box aan op het PA-systeem, waardoor bruinruis en aardlussen worden vermeden.' },
+  { id:12, name:'Gobo', cat:'lighting', level:'easy', icon:'🔆', desc:'Metalen of glazen schijf die in een theaterlamp wordt geplaatst om een bepaalde vorm of patroon te projecteren.', usage:'Een lichtontwerper gebruikt een gobo met sterrenmotief in een Source Four Leko om sterren op de achterwand van het decor te projecteren.' },
+  { id:13, name:'Fresnel', cat:'lighting', level:'easy', icon:'🔦', desc:'Theaterlamp met een geribde lens die een zacht, breed lichtbundel geeft, veel gebruikt voor algemene belichting.', usage:'In een theaterzaal hangen 12 Fresnels aan het balkon voor een gelijkmatige belichting van het gehele toneel.' },
+  { id:14, name:'Follow spot', cat:'lighting', level:'easy', icon:'🔦', desc:'Handmatig bediende spotlight waarmee een operator een artiest op het podium volgt.', usage:'Bij een musical volgt een followspot-operator de hoofdrolspeler over het podium terwijl hij een solo zingt.' },
+  { id:15, name:'FOH mix', cat:'audio', level:'easy', icon:'🎚️', desc:'De uiteindelijke mix van alle audiobronnen die naar het hoofdPA-systeem wordt gestuurd voor het publiek.', usage:'De FOH-engineer werkt de FOH-mix bij tijdens de soundcheck om een perfecte balans te bereiken voor de zaal.' },
+  { id:16, name:'Chain hoist', cat:'rigging', level:'medium', icon:'⛓️', desc:'Elektrische of handmatige ketting-takel voor het hijsen van zware lasten zoals truss en speakers.', usage:'Vier chain hoists van elk 1000 kg worden gebruikt om een 400 kg zware lichtbrug op 8 meter hoogte te hijsen.' },
+  { id:17, name:'Speaker management', cat:'audio', level:'hard', icon:'🔊', desc:'Verwerking van audio via digitale processors voor delays, EQ, crossover en limitersinstellingen per speakerzone.', usage:'De system engineer programmeert het speaker management systeem zodat de delay-speakers 20ms later spelen dan het main systeem.' },
+  { id:18, name:'Intercom / Clear-com', cat:'general', level:'easy', icon:'🎧', desc:'Communicatiesysteem waarmee crewleden tijdens een productie met elkaar kunnen praten.', usage:'De stage manager coördineert via het intercomsysteem de timing van de curtain call met belichting en geluid.' },
+  { id:19, name:'HDMI matrix', cat:'video', level:'medium', icon:'📺', desc:'Schakelaar waarmee meerdere HDMI-bronnen naar meerdere bestemmingen gerouteerd kunnen worden.', usage:'Een HDMI-matrix verbindt vier laptops met zes schermen op het podium, waarbij de videotechnicus snel kan schakelen tussen bronnen.' },
+  { id:20, name:'Projection mapping', cat:'video', level:'hard', icon:'🎨', desc:'Techniek waarbij video geprojecteerd wordt op driedimensionale objecten passend bij hun vorm.', usage:'Een videomapper projecteert een animatie precies op het decor van een theaterproductie, waardoor het lijkt alsof het decor tot leven komt.' },
+  { id:21, name:'PA-systeem', cat:'audio', level:'easy', icon:'📢', desc:'Public Address – het complete geluidsversterksysteem inclusief speakers, versterkers en signaalbewerking.', usage:'Het PA-systeem voor het festival bestaat uit een line array van 24 elementen per kant plus 4 subwoofers op het podium.' },
+  { id:22, name:'Dimmerpack', cat:'lighting', level:'easy', icon:'💡', desc:'Apparaat dat de stroomtoevoer naar conventionele lampen regelt door middel van dimmingcircuits.', usage:'Een dimmerpack met 12 kanalen voedt de conventionele lichten in het theater, aangestuurd via DMX van de lichtconsole.' },
+  { id:23, name:'Moving head', cat:'lighting', level:'medium', icon:'🔦', desc:'Motorisch bestuurbaar theaterlicht dat pan, tilt, kleur, gobo en beam kan aanpassen via DMX.', usage:'Twaalf moving heads worden via DMX geprogrammeerd voor een dynamische lichtshow waarbij pan en tilt gesynchroniseerd bewegen met de muziek.' },
+  { id:24, name:'Hazer / haze machine', cat:'general', level:'easy', icon:'💨', desc:'Machine die een fijne nevel (haze) produceert waardoor lichtbundels zichtbaar worden in de lucht.', usage:'Een hazer verspreidt dunne mist over het podium zodat de DMX-lichtbundels van de moving heads goed zichtbaar zijn voor het publiek.' },
+  { id:25, name:'Tie line', cat:'general', level:'medium', icon:'📌', desc:'Vaste kabelverbinding in een gebouw die punten in het gebouw verbindt voor audio, video of data.', usage:'Via de tie lines in het theater wordt audio van het podium naar de menglocatie in de zaal geleid zonder lange tijdelijke kabels.' },
+  { id:26, name:'Ground support', cat:'rigging', level:'medium', icon:'🏗️', desc:'Vrijstaande aluminium constructie op de vloer die als alternatief voor vliegpunten dient voor het ophangen van apparatuur.', usage:'Op een buitenlocatie zonder vliegpunten wordt ground support gebruikt om de lichtbrug en line array te ondersteunen.' },
+  { id:27, name:'Dressing room rider', cat:'general', level:'easy', icon:'🎤', desc:'Lijst met eisen van de artiest voor de kleedkamer, zoals catering en technische faciliteiten.', usage:'De production manager verwerkt alle riders van de acts zodat de venue tijdig kan zorgen voor de juiste faciliteiten per artiest.' },
+  { id:28, name:'Wireless IEM', cat:'audio', level:'medium', icon:'🎧', desc:'In-Ear Monitor systeem waarmee artiesten draadloos hun monitormix ontvangen via oordopjes.', usage:'Een zangeres gebruikt een draadloos IEM-systeem zodat ze zich vrij kan bewegen over het podium terwijl ze haar mix hoort.' },
+  { id:29, name:'LED-par', cat:'lighting', level:'easy', icon:'🟡', desc:'Energiezuinige LED-variant van de klassieke PAR-lamp, met RGBW of RGBWAUV kleurmogelijkheden.', usage:'Twintig LED-pars worden langs de voorkant van het podium geplaatst voor kleurrijke wash-belichting van de artiesten.' },
+  { id:30, name:'Timecode (SMPTE)', cat:'general', level:'hard', icon:'⏱️', desc:'Tijdcodesignaal dat wordt gebruikt om audio, licht en video te synchroniseren in een productie.', usage:'De lichtshow wordt gestart op timecode, zodat elke beweging van de moving heads exact gesynchroniseerd is met de muziek.' },
+  { id:31, name:'Stagebox / wallbox', cat:'audio', level:'easy', icon:'🔲', desc:'Aansluitpunt op het podium met microfoon- en lijnaasluitingen, verbonden via multicore met het mengpaneel.', usage:'De A2 verbindt alle microfoons en DI-boxes op het podium met de stagebox, die via een Cat5-kabel naar de console gaat.' },
+  { id:32, name:'Subwoofer', cat:'audio', level:'easy', icon:'🔉', desc:'Luidspreker specifiek voor het weergeven van lage frequenties (20-120 Hz) voor de basrespons van een PA-systeem.', usage:'Acht subwoofers worden in een cardioïd opstelling geplaatst voor maximale bas-output naar voren met minimale lekkage naar het podium.' },
+  { id:33, name:'Beam light', cat:'lighting', level:'medium', icon:'✨', desc:'Theaterlamp die een heel strakke, smalle lichtbundel produceert, vaak gebruikt voor dramatische effecten.', usage:'Beam lights worden in een rij langs de podiumvloer geplaatst voor spectaculaire fan-effecten tijdens climaxmomenten in de show.' },
+  { id:34, name:'Dante netwerk', cat:'audio', level:'hard', icon:'🌐', desc:'Audio over IP-protocol waarmee audio via een standaard ethernetnetwerk kan worden getransporteerd.', usage:'In een modern theater wordt Dante gebruikt om audio van 64 kanalen van de stagebox naar het mengpaneel te sturen via een Cat6-kabel.' },
+  { id:35, name:'LX plot', cat:'lighting', level:'medium', icon:'📐', desc:'Technische tekening met de exacte posities van alle lichten in een productie.', usage:'De lichtontwerper levert een LX plot waarmee de crew alle lichten op de juiste positie kan hangen en richten.' },
+  { id:36, name:'Wedge monitor', cat:'audio', level:'easy', icon:'🔊', desc:'Wigvormige luidspreker op het podium gericht op de artiest voor zijn monitormix.', usage:'Een gitarist vraagt om meer gitaar in zijn wedge monitor zodat hij zijn eigen spel beter kan horen tijdens het optreden.' },
+  { id:37, name:'Artnet', cat:'lighting', level:'hard', icon:'🌐', desc:'Protocol voor het versturen van DMX-data via ethernet, gebruikt bij complexe installaties met veel universa.', usage:'In een groot theater worden DMX-signalen via Artnet over het ethernetwerk gestuurd naar 8 DMX-nodes verdeeld over het gebouw.' },
+  { id:38, name:'Riser', cat:'general', level:'easy', icon:'⬆️', desc:'Verhoogd platform op het podium, vaak gebruikt voor drumstel of koorleden.', usage:'Het drumstel wordt geplaatst op een riser van 40cm hoogte zodat de drummer beter zichtbaar is voor het publiek.' },
+  { id:39, name:'Softpatch', cat:'lighting', level:'medium', icon:'💻', desc:'Virtuele koppeling in een lichtconsole tussen DMX-kanalen en dimmer-outputs, instelbaar via software.', usage:'De verlichtingstechnicus maakt een softpatch om dimmer 12 te koppelen aan DMX-adres 47 voor de spotlight op de piano.' },
+  { id:40, name:'Autofocus projector', cat:'video', level:'hard', icon:'🎬', desc:'Theaterprojector met automatische scherpstelschermering voor gebruik met bewegend decor of acteurs.', usage:'Een autofocus-projector volgt automatisch het scherpstelpunt wanneer het projectiescherm wordt bewogen tijdens de productie.' },
+  { id:41, name:'Effect machine', cat:'general', level:'easy', icon:'🌟', desc:'Apparaat dat speciale effecten produceert zoals confetti, sneeuw, vuur of rook.', usage:'Bij de finale van de musical wordt een confettikanon afgevuurd terwijl rookmachines voor dramatisch effect zorgen.' },
+  { id:42, name:'Cable management', cat:'general', level:'easy', icon:'🧹', desc:'Het geordend en veilig wegleggen van kabels op het podium en in de zaal.', usage:'Na de opbouw kontroleert de stage crew of alle kabels goed getapet en gelabeld zijn zodat niemand erover struikelt.' },
+  { id:43, name:'Flying rig', cat:'rigging', level:'hard', icon:'🚁', desc:'Volledig aan het plafond opgehangen constructie voor lichten en geluid.', usage:'In de grote stadsschouwburg is een flying rig geïnstalleerd waardoor de hele lichtinstallatie in 30 minuten kan worden bijgesteld.' },
+  { id:44, name:'EQ (equalizer)', cat:'audio', level:'medium', icon:'📊', desc:'Apparaat of plugin om de frequentierespons van een audiosignaal aan te passen door specifieke frequenties te verhogen of verlagen.', usage:'De FOH-engineer gebruikt een parametrische EQ om feedback-frequenties te snijden en de helderheid van de zang te verbeteren.' },
+  { id:45, name:'Compressor', cat:'audio', level:'medium', icon:'🔽', desc:'Audiosignaalprocessor die het dynamische bereik van een signaal vermindert door harde passages zachter te maken.', usage:'Een compressor op het drumsignaal wordt ingesteld met een attack van 10ms en release van 100ms voor een punchy drumgeluid.' },
+  { id:46, name:'Gate (noise gate)', cat:'audio', level:'medium', icon:'🚪', desc:'Signaalprocessor die een audiosignaal blokkeert wanneer het onder een bepaalde drempel (threshold) valt.', usage:'Een noise gate op de snarkan van het drumstel zorgt ervoor dat andere geluiden het snaarsignaal niet storen tussen de slagen.' },
+  { id:47, name:'Reverb', cat:'audio', level:'easy', icon:'🌊', desc:'Audio-effect dat de akoestische weerkaatsingen van een ruimte simuleert voor een meer natuurlijk klankbeeld.', usage:'Een lichte platehall reverb wordt gebruikt op de zang om het geluid warmer en ruimtelijker te maken in een droge studioopname.' },
+  { id:48, name:'Delay', cat:'audio', level:'easy', icon:'⏪', desc:'Audio-effect dat een kopie van het signaal na een bepaalde vertraging afspeelt, voor echo-effecten.', usage:'Een 250ms delay op de gitaar creëert een slapback-echo die past bij de rockabilly-stijl van de band.' },
+  { id:49, name:'GrandMA / lichtconsole', cat:'lighting', level:'medium', icon:'🎮', desc:'Professionele lichtconsole voor het programmeren en bedienen van complexe lichtshows.', usage:'De lichtoperator programmeert de complete lichtshow op een GrandMA3 console met 2048 DMX-kanalen en 64 universa.' },
+  { id:50, name:'Truss kleur/finish', cat:'rigging', level:'easy', icon:'🔸', desc:'Aluminium trusses zijn beschikbaar in zilver (blank aluminium) of zwart (poedercoated) voor esthetische integratie.', usage:'Voor een elegante corporate productie wordt zwarte truss gebruikt zodat de constructie minder opvalt voor het publiek.' },
+];
+
+const EQUIPMENT = [
+  // AUDIO
+  { id:1,  name:'DiGiCo SD12 Mengpaneel',          cat:'audio',          level:'hard',   icon:'🎚️', desc:'Professionele digitale mengconsole met 72 ingangskanalen, ideaal voor FOH en monitor gebruik bij grote producties.', usage:'Gebruikt bij concerttours en grote evenementen voor de FOH-mix door zijn flexibiliteit en uitstekende klankkwaliteit.', yt:'DiGiCo SD12 tutorial' },
+  { id:2,  name:'Shure SM58 Microfoon',             cat:'audio',          level:'easy',   icon:'🎤', desc:'De industrie-standaard dynamische zangmicrofoon, bestand, betaalbaar en extreem betrouwbaar.', usage:'Standaard zakelijke microfoon voor live zang op kleine tot middelgrote podia en in theaters.', yt:'Shure SM58 review tutorial' },
+  { id:3,  name:'L-Acoustics K2 Line Array',        cat:'audio',          level:'hard',   icon:'📢', desc:'Professioneel line-array-element voor grote outdoor en indoor evenementen met uitzonderlijk geluid.', usage:'Gebruikt bij Europese festivals en arenatoernees voor publiekscapaciteiten vanaf 5000 personen.', yt:'L-Acoustics K2 line array tutorial' },
+  { id:4,  name:'Sennheiser EW500 IEM',             cat:'audio',          level:'medium', icon:'🎧', desc:'Professioneel draadloos in-ear monitorsysteem voor artiesten die vrijheid van beweging nodig hebben.', usage:'Door musici in musicalsettings en Live-bands gebruikt om hun monitormix te ontvangen zonder kabelbelemmeringen.', yt:'Sennheiser EW500 in-ear monitor setup' },
+  { id:5,  name:'BSS DI-box',                       cat:'audio',          level:'easy',   icon:'📦', desc:'Passieve DI-box voor het converteren van ongebalanceerde signalen van gitaren en keyboards.', usage:'Standaard op elk podium gebruikt om elektrische gitaren, bassen en keyboards direct op het PA-systeem aan te sluiten.', yt:'DI box explained how to use' },
+  { id:6,  name:'Allen & Heath dLive C1500',        cat:'audio',          level:'hard',   icon:'🎛️', desc:'Compacte digitale mengconsole-surface met 12 faders voor kleine tot middelgrote producties.', usage:'Populair bij theaters en kleine concertzalen vanwege de flexibiliteit en betaalbaarheid vergeleken met duurdere alternatieven.', yt:'Allen Heath dLive C1500 tutorial' },
+  { id:7,  name:'Yamaha CL5 Mengpaneel',            cat:'audio',          level:'hard',   icon:'🎚️', desc:'Flaggenschip digitale console van Yamaha met 72 kanalen en Dante-integratie.', usage:'Veelgebruikte console in Japanse en Europese theaters en bij grote tour-producties.', yt:'Yamaha CL5 mixing console tutorial' },
+  { id:8,  name:'JBL VTX A12 Subwoofer',            cat:'audio',          level:'medium', icon:'🔉', desc:'High-performance subwoofer van 2x12 inch voor gebruik in line-array-configuraties.', usage:'Geplaatst in cardioïde opstellingen bij festivals om maximale basrespons te leveren tot 30Hz.', yt:'JBL VTX A12 subwoofer cardioid setup' },
+  { id:9,  name:'Sennheiser SKM 6000 Handheld',     cat:'audio',          level:'medium', icon:'🎤', desc:'Professionele draadloze handheldmicrofoon voor theaterproducties en grote events.', usage:'Standaard in West End en Broadway-producties voor primo draadloze prestaties op toneel.', yt:'Sennheiser SKM 6000 wireless microphone review' },
+  { id:10, name:'Klang:fabrik IEM-mixer',           cat:'audio',          level:'hard',   icon:'🎧', desc:'Binaural IEM-mixer die artiesten 3D-audio in hun IEM-systeem geeft via app-bediening.', usage:'Moderne touring-acts gebruiken dit systeem zodat de drummer zijn eigen mix kan afstemmen via zijn smartphone.', yt:'Klang fabrik 3D IEM mixing tutorial' },
+
+  // LIGHTING
+  { id:11, name:'Robe BMFL WashBeam',               cat:'lighting',       level:'hard',   icon:'🔦', desc:'Krachtige moving head met 1700W lamp, dual-mode beam en wash functionaliteit, CMY kleurmenging.', usage:'Gebruikt bij grote concerten en televisieshows als workhorse van de lichtrig vanwege z\'n veelzijdigheid en kracht.', yt:'Robe BMFL WashBeam moving head tutorial' },
+  { id:12, name:'ETC Source Four Leko',             cat:'lighting',       level:'medium', icon:'🔦', desc:'Ellipsoïdale theaterlamp voor scherpe lichtbundels en gobo-projectie, standaard in theaters wereldwijd.', usage:'In elk professioneel theater te vinden voor specials, key lights en tekstprojecties.', yt:'ETC Source Four ellipsoidal spotlight tutorial' },
+  { id:13, name:'Chauvet Professional COLORado 1',  cat:'lighting',       level:'easy',   icon:'🟡', desc:'RGBW LED-par voor wasbelichting, energiezuinig en kleurrijk, ideaal voor podia van elke grootte.', usage:'Veel gebruikt bij kleine tot middelgrote evenementen voor gekleurde achtergrondverlichting en podiumwash.', yt:'Chauvet COLORado LED par wash light tutorial' },
+  { id:14, name:'GrandMA3 Full Size Console',       cat:'lighting',       level:'hard',   icon:'🎮', desc:'Vlaggenschip lichtconsole van MA Lighting, industrie-standaard bij wereldtournees en grote shows.', usage:'Gebruikt bij de superbowlshow, Coldplay tours en grote theaterproducties voor complexe lichtprogrammering.', yt:'GrandMA3 lighting console tutorial beginners' },
+  { id:15, name:'Astera Titan Tube',                cat:'lighting',       level:'medium', icon:'🕯️', desc:'Draadloze RGBWAUV LED-tube van 1,2 meter, batterij-aangedreven voor gebruik zonder kabelgedoe.', usage:'Ideaal voor locaties zonder stroom en in de lucht hangende decoratieve lichtinstallaties bij events en theaterproducties.', yt:'Astera Titan Tube wireless LED tutorial' },
+  { id:16, name:'Claypaky Sharpy Beam',             cat:'lighting',       level:'medium', icon:'✨', desc:'Compacte en lichtsterke beam-lichtmachine die smalle bundels door de lucht schiet.', usage:'Typerend visueel van concerts en festivals, waarbij meerdere Sharpys waaierpatronen maken boven het publiek.', yt:'Claypaky Sharpy beam light show tutorial' },
+  { id:17, name:'Elation Cuepix Blinder',           cat:'lighting',       level:'easy',   icon:'💥', desc:'LED blinder met RGBW-LEDs voor het "verblinden" van het publiek tijdens dramatische momenten.', usage:'Geplaatst aan de voorkant van het podium voor whiteout-effecten bij het hoogtepunt van een nummer.', yt:'LED blinder stage lighting tutorial' },
+  { id:18, name:'Strand Bambino Follow Spot',       cat:'lighting',       level:'easy',   icon:'🔎', desc:'Compacte followspot van 575W voor kleine theaters, gemakkelijk te bedienen door één operator.', usage:'In kleine theaters en gala\'s gebruikt om de hoofdrolspeler of spreker op te volgen met een helder light.', yt:'follow spot operator technique tutorial' },
+  { id:19, name:'High End Hog 4 Console',           cat:'lighting',       level:'hard',   icon:'🐷', desc:'Professionele lichtconsole met intuïtieve Hog OS voor theaterlichttechnici en touring-LD\'s.', usage:'Populair in theaterwereld en bij middelgrote tours vanwege de snelle programmering en betrouwbaarheid.', yt:'High End Hog 4 lighting console tutorial' },
+  { id:20, name:'Showtec Kanjo Spot 300',           cat:'lighting',       level:'medium', icon:'🔆', desc:'Nederlandse LED-spot van Showtec, betaalbaar alternatief voor professionele toepassingen.', usage:'Veelgebruikt in het onderwijs en door kleinere venues als instapmodel voor professionele LED-spots.', yt:'Showtec LED moving head spot tutorial' },
+
+  // RIGGING
+  { id:21, name:'Liftket Elektro-takel 1000kg',     cat:'rigging',        level:'hard',   icon:'⛓️', desc:'Elektrische chain hoist gecertificeerd voor gebruik boven personen, 1000kg capaciteit.', usage:'Standaard chain hoist voor het hijsen van truss, speakers en andere zware apparatuur boven het publiek.', yt:'chain hoist stage rigging tutorial safety' },
+  { id:22, name:'Global Truss F34 vierkant',        cat:'rigging',        level:'medium', icon:'🔩', desc:'Standaard 290mm vierkante aluminium truss, beschikbaar van 0,5 tot 4 meter per sectie.', usage:'De meest gebruikte truss voor festivals, events en theaters wereldwijd door z\'n sterkte en beschikbaarheid.', yt:'Global Truss F34 assembly tutorial' },
+  { id:23, name:'Half-ton Round Sling',             cat:'rigging',        level:'easy',   icon:'⭕', desc:'Textielstrop van 500kg WLL voor het bevestigen van equipment aan truss of andere constructies.', usage:'Gebruikt door riggers voor het bevestigen van kabels, motors en andere equipment aan fly-bars en constructies.', yt:'round sling rigging how to use safely' },
+  { id:24, name:'Doughty Heavy Duty Clamp',         cat:'rigging',        level:'easy',   icon:'🔧', desc:'Standaard G-klem voor het bevestigen van equipment aan truss of pijpen tot 52mm diameter.', usage:'Op elk podium aanwezig voor het bevestigen van lichten, spiegels en kleine apparaten aan de truss.', yt:'stage lighting clamp truss safety tutorial' },
+  { id:25, name:'Prolyte Groundsupport H30V',       cat:'rigging',        level:'hard',   icon:'🏗️', desc:'Vrijstaand groundsupport-systeem dat tot 10 meter hoogte gebouwd kan worden voor truss en speakers.', usage:'Gebruikt op buitenlocaties zonder vliegpunten voor het ophangen van PA-systemen en lichtbridges.', yt:'Prolyte ground support system build tutorial' },
+
+  // VIDEO
+  { id:26, name:'Barco UDX-4K32 Projector',        cat:'video',          level:'hard',   icon:'📽️', desc:'Ultra-krachtige 4K laser-projector van 32.000 lumen voor grote projectieoppervlakken.', usage:'Gebruikt bij corporate events en theaterproducties voor heldere projectie in omgevingen met veel omgevingslicht.', yt:'Barco UDX projector setup tutorial' },
+  { id:27, name:'Resolume Avenue Software',         cat:'video',          level:'medium', icon:'💻', desc:'Professionele VJ-software voor real-time video mixing, mapping en compositing.', usage:'VJ\'s en videotechnici gebruiken Resolume voor live video mixing bij concerts, festivals en installaties.', yt:'Resolume Avenue tutorial beginners VJ' },
+  { id:28, name:'ROE Visual CB5 LED-scherm',        cat:'video',          level:'hard',   icon:'📺', desc:'5mm pixel-pitch indoor LED-module voor grote, heldere videoschermen op het podium.', usage:'Opgebouwd als podium backdrop bij concerten voor hoge resolutie video-content en beelden.', yt:'LED video wall stage setup tutorial' },
+  { id:29, name:'Blackmagic Design ATEM 4ME',       cat:'video',          level:'hard',   icon:'🎬', desc:'Professionele live-productie-mixer met 4 M/E rijen voor complexe multi-camera producties.', usage:'Gebruikt bij televisie-uitzendingen en grote livestream-producties voor professionele beeldwisseling.', yt:'Blackmagic ATEM live production switcher tutorial' },
+  { id:30, name:'Green Hippo Hippotizer',           cat:'video',          level:'hard',   icon:'🦛', desc:'Media server voor complexe projectiemapping en media playback in theaterproducties.', usage:'West End-producties gebruiken Hippotizer voor complexe geanimeerde decor-projecties gesynchroniseerd met de voorstelling.', yt:'Hippotizer media server projection mapping tutorial' },
+
+  // INFRASTRUCTURE
+  { id:31, name:'Socapex 19-pin kabel',             cat:'infrastructure', level:'medium', icon:'🔌', desc:'Stroomkabel die 6 dimmerkanalen bundelt in één verbinding voor efficiënte lichtdistributie.', usage:'Verbindt dimmerracks met lichtbridges in theaters voor snelle en geordende stroom distributie.', yt:'Socapex 19 pin cable stage lighting explained' },
+  { id:32, name:'Camlock stroomaansluiting',        cat:'infrastructure', level:'medium', icon:'🔋', desc:'Zwaarvermogen stroomansluitingssysteem voor het aansluiten van grote versterkers en dimmerracks.', usage:'Festivallocaties bieden Camlock-aansluitingen aan podia voor het aansluiten van de complete power-distributie.', yt:'camlock power connector stage event tutorial' },
+  { id:33, name:'Neutrik PowerCON aansluiting',     cat:'infrastructure', level:'easy',   icon:'🔌', desc:'Vergrendelbare stroomaansluiting voor apparatuur op het podium, beschikbaar in 16A en 32A.', usage:'Standaard aansluiting voor actieve speakers, verlichting en andere apparatuur die veilig vergrendeld moet zijn.', yt:'Neutrik PowerCON connector stage use explained' },
+  { id:34, name:'CAT6 ethernetkabel',               cat:'infrastructure', level:'easy',   icon:'🌐', desc:'Gigabit ethernetkabel gebruikt voor Dante-audio, Artnet-licht en andere netwerktoepassingen op het podium.', usage:'Verbindt stageboxen met mengpanelen en lichtconsoles met DMX-nodes in moderne digitale podia-installaties.', yt:'Dante audio network CAT6 stage setup tutorial' },
+  { id:35, name:'Patchbay audio',                   cat:'infrastructure', level:'medium', icon:'🔲', desc:'Modulair aansluitpaneel waarmee audiocircuits snel verbonden en omgewisseld kunnen worden.', usage:'In opnamestudio\'s en theaters gebruikt voor flexibele routing van audiosignalen tussen apparaten.', yt:'audio patchbay how to use tutorial studio' },
+  { id:36, name:'Multicore / stagesnake',           cat:'infrastructure', level:'easy',   icon:'🐍', desc:'Kabelgebundel van meerdere XLR-verbindingen voor efficiënt audiotransport van podium naar FOH.', usage:'Verbindt alle microfoonaansluitingen op het podium via één dikke kabelmantel met de FOH-positie in de zaal.', yt:'audio multicore stagebox snake explained' },
+  { id:37, name:'Rack 19" flightcase',              cat:'infrastructure', level:'easy',   icon:'🧳', desc:'Reisbestendig flightcase voor het vervoer en gebruik van 19-inch rack-apparatuur.', usage:'Alle processoren, versterkers en signaalbewerkers worden per rack vervoerd en op locatie direct operationeel gemaakt.', yt:'19 inch rack flight case stage equipment' },
+  { id:38, name:'DMX Splitter/buffer',              cat:'infrastructure', level:'medium', icon:'💡', desc:'Apparaat dat één DMX-signaal versterkt en opsplitst naar meerdere outputs voor grote installaties.', usage:'Wanneer er meer dan 30 DMX-apparaten op een universum zitten, wordt een splitter gebruikt voor betrouwbare signaalverdeling.', yt:'DMX splitter buffer stage lighting tutorial' },
+  { id:39, name:'Wireless DMX zender',              cat:'infrastructure', level:'medium', icon:'📡', desc:'Draadloos DMX-systeem voor het besturen van lichten zonder kabels, nuttig bij moeilijk bereikbare locaties.', usage:'Gebruikt voor Moving heads op ground-support of in decorstukken waar bekabeling onpraktisch of onmogelijk is.', yt:'wireless DMX system stage lighting tutorial' },
+  { id:40, name:'Power distributiebox',             cat:'infrastructure', level:'medium', icon:'⚡', desc:'Stroomdistributieunit voor het verdelen van drie-fasestroom naar meerdere groepenuitgangen.', usage:'Biedt geordende en zekere stroomdistributie aan een podia-installatie vanuit de hoofd-camlocks van de locatie.', yt:'power distribution stage event festival setup' },
+
+  // EXTRA AUDIO
+  { id:41, name:'Neve 1073 Preamp',                 cat:'audio',          level:'hard',   icon:'🎛️', desc:'Legendarische analoge microfoonpreamp met karakter, veelgebruikt in opnamestudio\'s en broadcasting.', usage:'In broadcast-vans en studie-setups gebruikt voor het opnemen van vocalen en akoestische instrumenten.', yt:'Neve 1073 preamp review tutorial' },
+  { id:42, name:'Avid Pro Tools',                   cat:'audio',          level:'medium', icon:'💻', desc:'Industrie-standaard DAW voor het opnemen, bewerken en mixen van audio in theaters en studios.', usage:'Gebruikt als multitrack-opname systeem bij live-opnames van theaterproducties en concert-registraties.', yt:'Pro Tools beginners tutorial DAW recording' },
+  { id:43, name:'BSS Soundweb Processor',           cat:'audio',          level:'hard',   icon:'🔧', desc:'Digitale audio signaalprocessor voor het beheren van PA-zones, DSP en routering.', usage:'Geïnstalleerd in theaters voor automatisch volume-beheer, zone routing en speaker management.', yt:'BSS Soundweb audio processor setup tutorial' },
+  { id:44, name:'Clear-Com FreeSpeak II',           cat:'audio',          level:'medium', icon:'🎙️', desc:'Draadloos intercomsysteem voor productie crew communicatie tot 20 draadloze beltpacks.', usage:'Gebruikt tijdens grote producties voor communicatie tussen stage manager, belichting, geluid en decorcrew.', yt:'Clear-Com FreeSpeak wireless intercom setup' },
+  { id:45, name:'RCF HDL 26-A Line Array',          cat:'audio',          level:'medium', icon:'📢', desc:'Actief line-array-element van Italiaans merk RCF, populair in Europa voor middelgrote shows.', usage:'Gebruikelijk bij middelgrote outdoor events en concertzalen voor helder en krachtig geluid tot 1500 personen.', yt:'RCF HDL line array system setup tutorial' },
+
+  // EXTRA LIGHTING
+  { id:46, name:'Elation Artiste Monet',            cat:'lighting',       level:'hard',   icon:'🎨', desc:'Powerful framing fixture met CMY-kleurmenging, iris, gobos en prism voor theater en events.', usage:'Veelgebruikt als key light in musicals en grote theaterproducties voor precieze belichting van acteurs.', yt:'Elation Artiste Monet framing fixture tutorial' },
+  { id:47, name:'Chauvet Professional Epix Strip',  cat:'lighting',       level:'easy',   icon:'🌈', desc:'Lineaire LED-strip van 1 meter met RGBW-pixels voor kleurrijke effecten en podiumverlichtingsranden.', usage:'Gebruikt langs podiumranden en decorstukken voor pixelpatronen en kleurverloopeffecten.', yt:'Chauvet Epix Strip LED pixel tutorial' },
+  { id:48, name:'Smoke machine Antari Z-1500',      cat:'lighting',       level:'easy',   icon:'💨', desc:'Professionele rookmachine van 1500 watt voor snel en dicht rook-effect.', usage:'Gebruikt bij theaterproducties voor sfeereffecten, het zichtbaar maken van lichtbundels en speciale effectscènes.', yt:'Antari Z1500 fog machine stage theater tutorial' },
+  { id:49, name:'MDG Me1 Hazer',                    cat:'lighting',       level:'medium', icon:'🌫️', desc:'Professionele hazer die een fijne, langdurige haze produceert voor het zichtbaar maken van lichteffecten.', usage:'Maakt lichtbundels zichtbaar bij concerten en evenementen zonder hinderlijk dikke rookwolken te creëren.', yt:'MDG hazer haze machine stage tutorial' },
+  { id:50, name:'Litec QX30 Truss',                 cat:'rigging',        level:'medium', icon:'🔩', desc:'Italiaanse kwaliteitstruss van 290mm vierkant, gecertificeerd voor gebruik boven personen.', usage:'Lichtbridgen en PA-hijspunten worden opgebouwd met Litec-truss vanwege de uitstekende certificering en sterkte.', yt:'Litec truss assembly stage rigging tutorial' },
+];
+
+const ROLES = [
+  { id:1, name:'FOH Geluidstechnicus', icon:'🎚️', desc:'Verantwoordelijk voor de geluidsmix voor het publiek vanuit de Front of House positie.', skills:['Mengpaneel bedienen','EQ en dynamiek','PA-systemen','Soundcheck'], equip:['Mengpaneel', 'PA-systeem', 'EQ', 'Compressor'] },
+  { id:2, name:'Monitor Engineer (A2)', icon:'🔊', desc:'Beheert alle monitormixen op het podium voor de artiesten tijdens optredens.', skills:['Monitor mixing','IEM-systemen','Podiumcommunicatie','Wedge-placement'], equip:['Monitor-mengpaneel', 'Wedge monitors', 'IEM-systeem', 'Stagebox'] },
+  { id:3, name:'Belichtingstechnicus', icon:'💡', desc:'Bedient en programmeert lichtshows en theaterbelichting tijdens producties.', skills:['Lichtconsole programmering','DMX','Moving heads','Color theory'], equip:['GrandMA console', 'Moving heads', 'LED-pars', 'DMX-splitter'] },
+  { id:4, name:'Rigger', icon:'🔩', desc:'Verantwoordelijk voor het veilig ophangen van apparatuur boven publiek en podium.', skills:['Veiligheidsregels','Laadberekeningen','Chain hoists','Truss assemblage'], equip:['Chain hoist', 'Truss', 'Shackles', 'Round slings'] },
+  { id:5, name:'Stage Technicus', icon:'🏗️', desc:'Coördineert alle technische aspecten op en rondom het podium tijdens een productie.', skills:['Opbouw & afbouw','Kabelbeheer','Veiligheid','Teamwork'], equip:['Handgereedschap', 'Stagebox', 'Kabels', 'Walkie-talkie'] },
+  { id:6, name:'Stage Manager', icon:'🎬', desc:'Coördineert de gehele productie vanuit de wings, inclusief alle technische departments.', skills:['Cue calling','Productie planning','Communicatie','Crisismanagement'], equip:['Intercom', 'Script/show call', 'Stopwatch', 'Productieplan'] },
+  { id:7, name:'Productiemanager', icon:'📋', desc:'Eindverantwoordelijke voor de technische en logistieke uitvoering van een productie.', skills:['Projectmanagement','Budgetbeheer','Contracten','Technisch overzicht'], equip:['Productieplan', 'Budget software', 'Riders', 'Stage plot'] },
+  { id:8, name:'Videotechnicus', icon:'📹', desc:'Beheert alle videosystemen inclusief projectie, LED-schermen en camerasystemen.', skills:['Media servers','LED-schermen','Projectiemapping','Signaalrouting'], equip:['Media server', 'LED-scherm', 'Projector', 'Signalprocessor'] },
+  { id:9, name:'System Engineer', icon:'🌐', desc:'Ontwerpt en beheert het complete audiosysteem van een venue of productie.', skills:['Akoestiek','Speaker management','Netwerken','Dante/AES67'], equip:['Speaker processor', 'Dante netwerk', 'Measurment software', 'Network switch'] },
+  { id:10, name:'Lichtontwerper (LD)', icon:'🎨', desc:'Creatief verantwoordelijke voor het ontwerp en concept van de belichting van een productie.', skills:['Lichtontwerp','LX plots','Artistieke visie','Technische kennis'], equip:['CAD software', 'Visualization tools', 'Lichtconsole', 'LX tekenprogramma'] },
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+
+let state = {
+  apiKey: localStorage.getItem('stagetech_apikey') || '',
+  userName: localStorage.getItem('stagetech_name') || 'Student',
+  quizzesDone: parseInt(localStorage.getItem('stagetech_quizzes') || '0'),
+  quizScores: JSON.parse(localStorage.getItem('stagetech_scores') || '[]'),
+  currentPage: 'dashboard',
+};
+
+let quizState = { questions:[], current:0, score:0, answered:false };
+let currentDifficulty = 'medium';
+let chatHistory = [];
+let recogLastImage = null;
+let recogLastResult = null;
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+
+function showPage(page, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+
+  const titles = {
+    dashboard: 'Dashboard',
+    library: 'Kennisbibliotheek',
+    equipment: 'Apparatuur',
+    roles: 'Technische Rollen',
+    quiz: 'Quiz Mode',
+    recognition: 'Apparatuurherkenning',
+    chat: 'AI Assistent',
+    settings: 'Instellingen',
+  };
+  document.getElementById('topbarTitle').textContent = titles[page] || page;
+  state.currentPage = page;
+  closeSidebar();
+
+  if (page === 'settings') loadSettings();
+  if (page === 'chat') checkApiKeyBanner();
+  if (page === 'recognition') checkApiKeyRec();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+function toggleSearch() {
+  const el = document.getElementById('topbarSearch');
+  el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+  if (el.style.display === 'flex') document.getElementById('globalSearch').focus();
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════════════════════
+
+function getCatTag(cat) {
+  const map = {
+    audio: '<span class="tag tag-audio">🎵 Audio</span>',
+    lighting: '<span class="tag tag-lighting">💡 Licht</span>',
+    rigging: '<span class="tag tag-rigging">🔩 Rigging</span>',
+    video: '<span class="tag tag-video">📹 Video</span>',
+    infrastructure: '<span class="tag tag-infra">🏗️ Infra</span>',
+    general: '<span class="tag" style="background:rgba(255,255,255,0.07);color:var(--text2);">📋 Algemeen</span>',
+  };
+  return map[cat] || '';
+}
+
+function getLevelTag(lvl) {
+  if (lvl === 'easy') return '<span class="tag tag-easy">⬜ Basis</span>';
+  if (lvl === 'medium') return '<span class="tag tag-medium">🔶 Gevorderd</span>';
+  return '<span class="tag tag-hard">🔴 Expert</span>';
+}
+
+function renderTerms(filter) {
+  const list = filter === 'all' ? TERMS : TERMS.filter(t => t.cat === filter);
+  document.getElementById('termsGrid').innerHTML = list.map(t => `
+    <div class="term-card" onclick="openModal('term',${t.id})">
+      <div class="term-name">${t.icon} ${t.name}</div>
+      <div class="term-category">${t.cat.toUpperCase()}</div>
+      <div class="term-desc">${t.desc.substring(0, 90)}...</div>
+      <div style="margin-top:10px;display:flex;gap:6px;">${getCatTag(t.cat)}${getLevelTag(t.level)}</div>
+    </div>
+  `).join('');
+}
+
+function filterTerms(cat, el) {
+  document.querySelectorAll('#termFilters .filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderTerms(cat);
+}
+
+function renderEquip(filter) {
+  const list = filter === 'all' ? EQUIPMENT : EQUIPMENT.filter(e => e.cat === filter);
+  document.getElementById('equipGrid').innerHTML = list.map(e => `
+    <div class="equip-card" onclick="openModal('equip',${e.id})">
+      <div class="equip-thumb">${e.icon}</div>
+      <div class="equip-body">
+        <div class="equip-name">${e.name}</div>
+        <div class="equip-desc">${e.desc}</div>
+        <div class="equip-meta">
+          ${getCatTag(e.cat)}
+          ${getLevelTag(e.level)}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterEquip(cat, el) {
+  document.querySelectorAll('#equipFilters .filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderEquip(cat);
+}
+
+function renderRoles() {
+  document.getElementById('rolesGrid').innerHTML = ROLES.map(r => `
+    <div class="role-card" onclick="openModal('role',${r.id})">
+      <div class="role-icon">${r.icon}</div>
+      <div class="role-name">${r.name}</div>
+      <div class="role-desc">${r.desc}</div>
+      <div class="role-skills">
+        ${r.skills.map(s => `<span class="skill-chip">${s}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderModules() {
+  const modules = [
+    { icon:'🔊', title:'Audiogrondslag', desc:'Leer de basis van audioapparatuur en signaalstromen', progress:65, page:'library' },
+    { icon:'💡', title:'Belichting', desc:'Van dimmer tot moving head – beheers theaterlicht', progress:40, page:'equipment' },
+    { icon:'🔩', title:'Rigging & Veiligheid', desc:'Veilig hijsen en bevestigen van podiumapparatuur', progress:20, page:'library' },
+  ];
+  document.getElementById('modulesGrid').innerHTML = modules.map(m => `
+    <div class="module-card" onclick="showPage('${m.page}',null)">
+      <div class="module-icon">${m.icon}</div>
+      <div class="module-title">${m.title}</div>
+      <div class="module-desc">${m.desc}</div>
+      <div class="module-progress">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:5px;">
+          <span>Voortgang</span><span>${m.progress}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${m.progress}%"></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderDashboard() {
+  document.getElementById('heroTitle').textContent = `Hey ${state.userName}!`;
+  document.getElementById('userNameSidebar').textContent = state.userName;
+  document.getElementById('userAvatarSidebar').textContent = state.userName[0].toUpperCase();
+  document.getElementById('statQuizzes').textContent = state.quizzesDone;
+  document.getElementById('statQuizzesBig').textContent = state.quizzesDone;
+  const avgScore = state.quizScores.length ? Math.round(state.quizScores.reduce((a,b)=>a+b,0)/state.quizScores.length) : null;
+  const scoreStr = avgScore !== null ? avgScore + '%' : '—';
+  document.getElementById('statScore').textContent = scoreStr;
+  document.getElementById('statScoreBig').textContent = scoreStr;
+}
+
+// ═══════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════
+
+function openModal(type, id) {
+  let item;
+  if (type === 'term') item = TERMS.find(t => t.id === id);
+  else if (type === 'equip') item = EQUIPMENT.find(e => e.id === id);
+  else if (type === 'role') item = ROLES.find(r => r.id === id);
+
+  if (!item) return;
+
+  document.getElementById('modalIcon').textContent = item.icon;
+  document.getElementById('modalTitle').textContent = item.name;
+  document.getElementById('modalDesc').textContent = item.desc || item.desc;
+
+  const tagsWrap = document.getElementById('modalTagsWrap');
+  if (item.cat) tagsWrap.innerHTML = getCatTag(item.cat) + (item.level ? ' ' + getLevelTag(item.level) : '');
+  else tagsWrap.innerHTML = '';
+
+  const extraSec = document.getElementById('modalExtraSection');
+  const usageSec = document.getElementById('modalUsageSection');
+  const ytLink = document.getElementById('modalYTLink');
+  ytLink.innerHTML = '';
+
+  if (type === 'role') {
+    extraSec.style.display = 'block';
+    document.getElementById('modalExtraTitle').textContent = 'Benodigde vaardigheden';
+    document.getElementById('modalExtraContent').innerHTML = item.skills.map(s=>`<span class="skill-chip" style="display:inline-block;margin:3px;">${s}</span>`).join('');
+    usageSec.style.display = 'block';
+    document.getElementById('modalUsageContent').innerHTML = 'Typische apparatuur: ' + (item.equip || []).join(', ');
+  } else {
+    extraSec.style.display = 'none';
+    if (item.usage) {
+      usageSec.style.display = 'block';
+      document.getElementById('modalUsageContent').textContent = item.usage;
+    } else usageSec.style.display = 'none';
+
+    if (item.yt) {
+      const ytSearch = encodeURIComponent(item.yt);
+      ytLink.innerHTML = `<a class="yt-btn" href="https://www.youtube.com/results?search_query=${ytSearch}" target="_blank">▶ YouTube Tutorials zoeken</a>`;
+    }
+  }
+
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalBtn();
+}
+
+function closeModalBtn() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════════
+
+function generateQuestions(difficulty) {
+  const allTerms = difficulty === 'easy'
+    ? TERMS.filter(t => t.level === 'easy')
+    : difficulty === 'hard'
+    ? TERMS.filter(t => t.level !== 'easy')
+    : TERMS.filter(t => t.level !== 'hard');
+
+  const shuffled = [...allTerms].sort(() => Math.random() - 0.5).slice(0, 10);
+
+  return shuffled.map(term => {
+    const others = TERMS.filter(t => t.id !== term.id).sort(() => Math.random() - 0.5).slice(0, 3);
+    const options = [term, ...others].sort(() => Math.random() - 0.5);
+    return {
+      question: `Wat is de definitie van "${term.name}"?`,
+      label: term.cat.charAt(0).toUpperCase() + term.cat.slice(1),
+      hint: `Categorie: ${term.cat}`,
+      correct: term.id,
+      options: options.map(o => ({ id: o.id, text: o.desc.substring(0, 90) + '...' })),
+      explanation: term.usage,
+    };
+  });
+}
+
+function startQuiz(difficulty) {
+  currentDifficulty = difficulty;
+  quizState = {
+    questions: generateQuestions(difficulty),
+    current: 0,
+    score: 0,
+    answered: false,
+  };
+
+  document.getElementById('quizStart').style.display = 'none';
+  document.getElementById('quizDone').style.display = 'none';
+  document.getElementById('quizActive').style.display = 'block';
+
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = quizState.questions[quizState.current];
+  const total = quizState.questions.length;
+  const pct = ((quizState.current + 1) / total * 100).toFixed(0);
+
+  document.getElementById('quizProgressText').textContent = `Vraag ${quizState.current + 1} van ${total}`;
+  document.getElementById('quizProgressBar').style.width = pct + '%';
+  document.getElementById('quizQLabel').textContent = q.label;
+  document.getElementById('quizQText').textContent = q.question;
+  document.getElementById('quizQHint').textContent = q.hint;
+
+  const letters = ['A', 'B', 'C', 'D'];
+  document.getElementById('quizOptions').innerHTML = q.options.map((opt, i) => `
+    <div class="quiz-option" id="opt-${opt.id}" onclick="selectAnswer(${opt.id})">
+      <div class="option-letter">${letters[i]}</div>
+      <div>${opt.text}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('quizFeedback').classList.remove('show', 'correct-feedback', 'wrong-feedback');
+  document.getElementById('quizNextBtn').style.display = 'none';
+  quizState.answered = false;
+}
+
+function selectAnswer(optId) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+
+  const q = quizState.questions[quizState.current];
+  const correct = optId === q.correct;
+
+  if (correct) quizState.score++;
+
+  // Highlight options
+  q.options.forEach(opt => {
+    const el = document.getElementById('opt-' + opt.id);
+    if (!el) return;
+    if (opt.id === q.correct) el.classList.add('correct');
+    else if (opt.id === optId) el.classList.add('wrong');
+  });
+
+  // Show feedback
+  const fb = document.getElementById('quizFeedback');
+  fb.classList.add('show');
+  fb.classList.add(correct ? 'correct-feedback' : 'wrong-feedback');
+  document.getElementById('feedbackTitle').textContent = correct ? '✅ Correct!' : '❌ Helaas fout';
+  document.getElementById('feedbackText').textContent = q.explanation || '';
+
+  document.getElementById('quizNextBtn').style.display = 'inline-flex';
+}
+
+function nextQuestion() {
+  quizState.current++;
+  if (quizState.current >= quizState.questions.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+function finishQuiz() {
+  const score = quizState.score;
+  const total = quizState.questions.length;
+  const pct = Math.round(score / total * 100);
+
+  state.quizzesDone++;
+  state.quizScores.push(pct);
+  localStorage.setItem('stagetech_quizzes', state.quizzesDone);
+  localStorage.setItem('stagetech_scores', JSON.stringify(state.quizScores));
+
+  document.getElementById('quizActive').style.display = 'none';
+  document.getElementById('quizDone').style.display = 'block';
+  document.getElementById('quizDoneEmoji').textContent = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📚';
+  document.getElementById('quizDoneTitle').textContent = pct >= 80 ? 'Uitstekend!' : pct >= 50 ? 'Goed gedaan!' : 'Blijven oefenen!';
+  document.getElementById('quizDoneScore').textContent = `Je scoorde ${score} van de ${total} vragen correct (${pct}%)`;
+
+  renderDashboard();
+}
+
+function resetQuiz() {
+  document.getElementById('quizStart').style.display = 'block';
+  document.getElementById('quizActive').style.display = 'none';
+  document.getElementById('quizDone').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════
+// AI CHAT
+// ═══════════════════════════════════════════════════════
+
+function checkApiKeyBanner() {
+  const banner = document.getElementById('apiKeyBannerChat');
+  if (state.apiKey) {
+    banner.style.display = 'none';
+  } else {
+    banner.style.display = 'flex';
+    document.getElementById('apiKeyInputChat').value = '';
+  }
+}
+
+function checkApiKeyRec() {
+  const banner = document.getElementById('apiKeyBannerRec');
+  banner.style.display = state.apiKey ? 'none' : 'flex';
+}
+
+function saveApiKey(key) {
+  state.apiKey = key.trim();
+  localStorage.setItem('stagetech_apikey', state.apiKey);
+  if (state.apiKey) {
+    document.getElementById('apiKeyBannerChat').style.display = 'none';
+    document.getElementById('apiKeyBannerRec').style.display = 'none';
+    showToast('✅ API sleutel opgeslagen');
+  }
+  if (document.getElementById('settingApiKey')) document.getElementById('settingApiKey').value = state.apiKey;
+}
+
+async function testApiKey() {
+  if (!state.apiKey) { showToast('⚠️ Geen API sleutel ingevoerd'); return; }
+  showToast('⏳ Verbinding testen...');
+  try {
+    const res = await callClaude([{role:'user',content:'Zeg alleen "Verbonden" in het Nederlands.'}]);
+    showToast('✅ Verbinding gelukt: ' + res.substring(0,30));
+  } catch(e) {
+    showToast('❌ Verbinding mislukt: ' + e.message);
+  }
+}
+
+async function callClaude(messages, systemPrompt) {
+  const sys = systemPrompt || `Je bent een AI-assistent gespecialiseerd in podiumtechniek en theatertechnologie. 
+Je helpt studenten die podiumtechniek studeren op MBO en HBO niveau in Nederland. 
+Antwoord altijd in het Nederlands, tenzij de student Engels praat.
+Gebruik technische termen maar leg ze altijd uit.
+Wees concreet en gebruik praktijkvoorbeelden.
+Gebruik emoji's spaarzaam maar effectief.
+Houd antwoorden informatief maar niet te lang.`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: sys,
+      messages,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error?.message || 'API fout');
+  }
+
+  const data = await response.json();
+  return data.content[0].text;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function chatKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  if (!state.apiKey) {
+    showToast('⚠️ Voer eerst je API sleutel in bij Instellingen');
+    showPage('settings', null);
+    return;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+
+  appendMsg('user', msg);
+  chatHistory.push({ role: 'user', content: msg });
+
+  const typingEl = appendTyping();
+
+  try {
+    const reply = await callClaude(chatHistory);
+    chatHistory.push({ role: 'assistant', content: reply });
+    typingEl.remove();
+    appendMsg('ai', formatChatText(reply));
+  } catch (e) {
+    typingEl.remove();
+    appendMsg('ai', '❌ Fout: ' + e.message + '. Controleer je API sleutel.');
+  }
+
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function sendQuickPrompt(text) {
+  document.getElementById('chatInput').value = text;
+  sendChat();
+}
+
+function formatChatText(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+}
+
+function appendMsg(type, content) {
+  const el = document.createElement('div');
+  el.className = 'chat-msg ' + type;
+  el.innerHTML = `
+    <div class="msg-avatar ${type}">${type === 'ai' ? '🎬' : '👤'}</div>
+    <div class="msg-bubble">${content}</div>
+  `;
+  const msgs = document.getElementById('chatMessages');
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+
+function appendTyping() {
+  const el = document.createElement('div');
+  el.className = 'chat-msg ai';
+  el.innerHTML = `
+    <div class="msg-avatar ai">🎬</div>
+    <div class="msg-bubble">
+      <div class="typing-indicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+  `;
+  const msgs = document.getElementById('chatMessages');
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+
+// ═══════════════════════════════════════════════════════
+// RECOGNITION
+// ═══════════════════════════════════════════════════════
+
+function clearRecog() {
+  document.getElementById('recognitionResult').classList.remove('show');
+  document.getElementById('cameraFrame').innerHTML = `
+    <div class="upload-zone-icon">📷</div>
+    <div class="upload-zone-text">Klik om een foto te uploaden</div>
+    <div class="upload-zone-sub">of sleep een afbeelding hiernaartoe</div>
+  `;
+  recogLastImage = null;
+}
+
+async function handleRecogImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const dataUrl = e.target.result;
+    recogLastImage = dataUrl;
+
+    // Show image in frame
+    const frame = document.getElementById('cameraFrame');
+    frame.innerHTML = `<img src="${dataUrl}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:black;">`;
+
+    if (!state.apiKey) {
+      // Use local database matching as fallback
+      showRecogFallback();
+      return;
+    }
+
+    document.getElementById('recogLoading').style.display = 'block';
+    document.getElementById('recognitionResult').classList.remove('show');
+
+    try {
+      const base64 = dataUrl.split(',')[1];
+      const mimeType = file.type || 'image/jpeg';
+
+      const reply = await callClaudeVision(base64, mimeType);
+      document.getElementById('recogLoading').style.display = 'none';
+      showRecogResult(reply);
+    } catch (err) {
+      document.getElementById('recogLoading').style.display = 'none';
+      showToast('❌ Herkenning mislukt: ' + err.message);
+      showRecogFallback();
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function callClaudeVision(base64, mimeType) {
+  const equipNames = EQUIPMENT.map(e => e.name).join(', ');
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: `Je bent een expert in podiumtechniek en theatertechnologie. Analyseer afbeeldingen van technische apparatuur.
+Bekende apparatuur in onze database: ${equipNames}.
+Antwoord ALLEEN in dit JSON-formaat (geen andere tekst):
+{"name":"naam van het apparaat","category":"audio|lighting|rigging|video|infrastructure","confidence":"hoog|gemiddeld|laag","description":"korte beschrijving in het Nederlands (2 zinnen)","usage":"typisch gebruik in de praktijk (1 zin)","icon":"passende emoji"}`,
+      messages: [{
+        role: 'user',
+        content: [{
+          type: 'image',
+          source: { type: 'base64', media_type: mimeType, data: base64 },
+        }, {
+          type: 'text',
+          text: 'Wat voor podiumtechnisch apparaat is dit? Antwoord in JSON-formaat.',
+        }],
+      }],
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error?.message || 'Vision API fout');
+  }
+
+  const data = await response.json();
+  const text = data.content[0].text.trim();
+
+  // Parse JSON
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('Geen geldig JSON-antwoord');
+  return JSON.parse(jsonMatch[0]);
+}
+
+function showRecogResult(result) {
+  recogLastResult = result;
+
+  document.getElementById('recogIcon').textContent = result.icon || '🎛️';
+  document.getElementById('recogName').textContent = result.name;
+  document.getElementById('recogConfidence').textContent = `Betrouwbaarheid: ${result.confidence}`;
+  document.getElementById('recogDesc').textContent = result.description;
+  document.getElementById('recogUsage').textContent = result.usage;
+  document.getElementById('recogTags').innerHTML = getCatTag(result.category);
+  document.getElementById('recognitionResult').classList.add('show');
+}
+
+function showRecogFallback() {
+  // Pick a random equipment item as demo
+  const random = EQUIPMENT[Math.floor(Math.random() * EQUIPMENT.length)];
+  showRecogResult({
+    icon: random.icon,
+    name: random.name + ' (Demo)',
+    category: random.cat,
+    confidence: 'demo',
+    description: random.desc,
+    usage: random.usage,
+  });
+}
+
+function askAIAboutRecog() {
+  if (!recogLastResult) return;
+  const query = `Vertel me meer over "${recogLastResult.name}" in de context van podiumtechniek.`;
+  showPage('chat', null);
+  document.getElementById('chatInput').value = query;
+  setTimeout(() => sendChat(), 300);
+}
+
+function startCamera() {
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(stream => {
+        const frame = document.getElementById('cameraFrame');
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.autoplay = true;
+        video.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+        frame.innerHTML = '';
+        frame.appendChild(video);
+
+        const overlay = document.createElement('div');
+        overlay.className = 'camera-overlay';
+        overlay.innerHTML = '<div class="scan-ring"></div>';
+        frame.appendChild(overlay);
+
+        // Add capture button
+        const captureBtn = document.createElement('button');
+        captureBtn.textContent = '📸 Foto maken';
+        captureBtn.style.cssText = 'position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:10;padding:10px 24px;background:var(--accent);color:var(--bg);border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;';
+        captureBtn.onclick = () => captureFrame(video, stream);
+        frame.appendChild(captureBtn);
+      })
+      .catch(() => showToast('⚠️ Camera toegang geweigerd'));
+  } else {
+    showToast('⚠️ Camera niet beschikbaar in deze browser');
+  }
+}
+
+function captureFrame(video, stream) {
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+
+  stream.getTracks().forEach(t => t.stop());
+
+  const dataUrl = canvas.toDataURL('image/jpeg');
+  recogLastImage = dataUrl;
+
+  const frame = document.getElementById('cameraFrame');
+  frame.innerHTML = `<img src="${dataUrl}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:black;">`;
+
+  if (!state.apiKey) { showRecogFallback(); return; }
+
+  document.getElementById('recogLoading').style.display = 'block';
+  callClaudeVision(dataUrl.split(',')[1], 'image/jpeg')
+    .then(r => { document.getElementById('recogLoading').style.display = 'none'; showRecogResult(r); })
+    .catch(e => { document.getElementById('recogLoading').style.display = 'none'; showToast('❌ ' + e.message); showRecogFallback(); });
+}
+
+function recogManualSearch(query) {
+  const container = document.getElementById('recogSearchResults');
+  if (!query) { container.innerHTML = ''; return; }
+
+  const results = EQUIPMENT.filter(e =>
+    e.name.toLowerCase().includes(query.toLowerCase()) ||
+    e.desc.toLowerCase().includes(query.toLowerCase())
+  ).slice(0, 5);
+
+  container.innerHTML = results.map(e => `
+    <div class="card card-sm" style="cursor:pointer;display:flex;align-items:center;gap:12px;" onclick="openModal('equip',${e.id})">
+      <div style="font-size:28px;">${e.icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:14px;">${e.name}</div>
+        <div style="font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${e.desc.substring(0,60)}...</div>
+      </div>
+      ${getCatTag(e.cat)}
+    </div>
+  `).join('') || '<div style="color:var(--text3);font-size:13px;">Geen resultaten gevonden</div>';
+}
+
+// ═══════════════════════════════════════════════════════
+// GLOBAL SEARCH
+// ═══════════════════════════════════════════════════════
+
+function handleGlobalSearch(q) {
+  if (!q) return;
+  // Just navigate to equipment page and show it
+}
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════
+
+function loadSettings() {
+  document.getElementById('settingName').value = state.userName;
+  document.getElementById('settingApiKey').value = state.apiKey;
+}
+
+function updateProfile() {
+  state.userName = document.getElementById('settingName').value || 'Student';
+  localStorage.setItem('stagetech_name', state.userName);
+  renderDashboard();
+  showToast('✅ Profiel opgeslagen');
+}
+
+function resetStats() {
+  if (!confirm('Weet je zeker dat je alle statistieken wilt wissen?')) return;
+  state.quizzesDone = 0;
+  state.quizScores = [];
+  localStorage.removeItem('stagetech_quizzes');
+  localStorage.removeItem('stagetech_scores');
+  renderDashboard();
+  showToast('✅ Statistieken gewist');
+}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+
+let toastTimeout;
+function showToast(msg) {
+  clearTimeout(toastTimeout);
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════════════
+// DRAG & DROP
+// ═══════════════════════════════════════════════════════
+
+document.addEventListener('dragover', e => {
+  if (state.currentPage === 'recognition') e.preventDefault();
+});
+
+document.addEventListener('drop', e => {
+  if (state.currentPage !== 'recognition') return;
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const fakeEvent = { target: { files: [file] } };
+    handleRecogImage(fakeEvent);
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+
+function init() {
+  renderTerms('all');
+  renderEquip('all');
+  renderRoles();
+  renderModules();
+  renderDashboard();
+
+  // Load saved name
+  const savedName = localStorage.getItem('stagetech_name');
+  if (savedName) state.userName = savedName;
+  const savedKey = localStorage.getItem('stagetech_apikey');
+  if (savedKey) state.apiKey = savedKey;
+
+  renderDashboard();
+}
+
+init();
+</script>
+</body>
+</html>
