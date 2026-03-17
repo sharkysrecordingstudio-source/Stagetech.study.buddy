@@ -1,0 +1,1 @@
+This is an app for students in vocational education and universities of applied sciences to learn the basic concepts and materials of stage technology. It includes a training module, a quiz, search functions powered by AI, and much more. Are you interested in audio engineering, lighting technology, theatre technology, or rigging? Then make use of Stage Study Buddy.
